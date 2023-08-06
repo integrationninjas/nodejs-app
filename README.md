@@ -1,4 +1,4 @@
-# graphql-sample-app
+# Nodejs app with rest and graphql example
 
 An example of GraphQL queries/mutations with Node and Express js.
 
