@@ -2,11 +2,11 @@ name: CICD
 
 on:
   push:
-    branches: [deploy-to-ecs]
+    branches: [ deploy-to-ecs-fargate ]
 
 jobs:
   build-and-deploy:
-    runs-on: [ubuntu-latest]
+    runs-on: [ ubuntu-latest ]
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -26,7 +26,7 @@ jobs:
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ github.sha }}
           REPOSITORY: nodejs-app
         run: |
           # Build a docker container and
