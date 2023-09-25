@@ -1,6 +1,6 @@
 {
   "ipcMode": null,
-  "executionRoleArn": "arn:aws:iam::763857617563:role/ecsTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::243935758121:role/ecsTaskExecutionRole",
   "containerDefinitions": [
     {
       "dnsSearchDomains": null,
@@ -16,7 +16,7 @@
       ],
       "command": [],
       "linuxParameters": null,
-      "cpu": 1,
+      "cpu": 0,
       "environment": [],
       "resourceRequirements": null,
       "ulimits": null,
@@ -29,7 +29,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "763857617563.dkr.ecr.eu-north-1.amazonaws.com/nodejs-app:latest",
+      "image": "243935758121.dkr.ecr.eu-west-1.amazonaws.com/nodejs-app:latest",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -51,13 +51,13 @@
   ],
   "placementConstraints": [],
   "memory": null,
-  "taskRoleArn": "arn:aws:iam::763857617563:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::243935758121:role/ecsTaskExecutionRole",
   "compatibilities": [
     "EXTERNAL",
     "EC2"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:eu-north-1:763857617563:task-definition/nodejs-app-task-definition:1",
-  "family": "nodejs-app-task-definition",
+  "taskDefinitionArn": "arn:aws:ecs:eu-west-1:243935758121:task-definition/node-app-task-definition:1",
+  "family": "node-app-task-definition",
   "requiresAttributes": [
     {
       "targetId": null,
