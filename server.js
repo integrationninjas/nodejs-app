@@ -1,78 +1,37 @@
 const express = require("express");
+const cors = require("cors");
+
 const app = express();
-const PORT = 5000;
-const userData = require("./MOCK_DATA.json");
-const graphql = require("graphql")
-const { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLID, GraphQLInt, GraphQLString } = graphql
-const { graphqlHTTP } = require("express-graphql")
 
-const UserType = new GraphQLObjectType({
-    name: "User",
-    fields: () => ({
-        id: { type: GraphQLInt },
-        firstName: { type: GraphQLString },
-        lastName: { type: GraphQLString },
-        email: { type: GraphQLString },
-        password: { type: GraphQLString },
-    })
-})
+// parse requests of content-type - application/json
+app.use(express.json());
 
-const RootQuery = new GraphQLObjectType({
-    name: "RootQueryType",
-    fields: {
-        getAllUsers: {
-            type: new GraphQLList(UserType),
-            args: { id: {type: GraphQLInt}},
-            resolve(parent, args) {
-                return userData;
-            }
-        },
-        findUserById: {
-            type: UserType,
-            description: "fetch single user",
-            args: { id: {type: GraphQLInt}},
-            resolve(parent, args) {
-                return userData.find((a) => a.id == args.id);
-            }
-        }
-    }
-})
-const Mutation = new GraphQLObjectType({
-    name: "Mutation",
-    fields: {
-        createUser: {
-            type: UserType,
-            args: {
-                firstName: {type: GraphQLString},
-                lastName: { type: GraphQLString },
-                email: { type: GraphQLString },
-                password: { type: GraphQLString },
-            },
-            resolve(parent, args) {
-                userData.push({
-                    id: userData.length + 1,
-                    firstName: args.firstName,
-                    lastName: args.lastName,
-                    email: args.email,
-                    password: args.password
-                })
-                return args
-            }
-        }
-    }
-})
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
 
-const schema = new GraphQLSchema({query: RootQuery, mutation: Mutation})
-app.use("/graphql", graphqlHTTP({
-    schema,
-    graphiql: true,
+const db = require("./app/models");
+db.mongoose
+  .connect(db.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   })
-);
+  .then(() => {
+    console.log("Connected to the database!");
+  })
+  .catch(err => {
+    console.log("Cannot connect to the database!", err);
+    process.exit();
+  });
 
-app.get("/rest/getAllUsers", (req, res) => {
-    res.send(userData)
-   });
+// simple route
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to Integration Ninjas!" });
+});
 
+require("./app/routes/turorial.routes")(app);
+
+// set port, listen for requests
+const PORT = 5000;
 app.listen(PORT, () => {
-  console.log("Server running");
+  console.log(`Server is running on port ${PORT}.`);
 });
