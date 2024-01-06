@@ -71,7 +71,12 @@ app.use("/graphql", graphqlHTTP({
 
 app.get("/rest/getAllUsers", (req, res) => {
     res.send(userData)
-   });
+});
+
+app.get('/profile', (req, res) => {
+    const userName = req.query.name; // Unsanitized user input
+    res.send(userName); // Vulnerable to XSS
+});
 
 app.listen(PORT, () => {
   console.log("Server running");
