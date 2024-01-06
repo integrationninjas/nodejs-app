@@ -41,3 +41,9 @@ mutation{
   }
 }
 
+# Test vulnerable endpoint 
+
+This is vulnerable to XSS (Cross-Site Scripting)
+Method: GET
+Endpoint: http://localhost:5000/profile?name=%3Cscript%3Ealert(%27XSS%27)%3C/script%3E
+
