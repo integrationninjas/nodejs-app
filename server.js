@@ -5,6 +5,7 @@ const userData = require("./MOCK_DATA.json");
 const graphql = require("graphql")
 const { GraphQLObjectType, GraphQLSchema, GraphQLList, GraphQLID, GraphQLInt, GraphQLString } = graphql
 const { graphqlHTTP } = require("express-graphql")
+const { execSync } = require('child_process');
 
 const UserType = new GraphQLObjectType({
     name: "User",
@@ -77,6 +78,19 @@ app.get('/profile', (req, res) => {
     const userName = req.query.name; // Unsanitized user input
     res.send(userName); // Vulnerable to XSS
 });
+
+// This is a vulnerable endpoint susceptible to command injection
+app.get('/vulnerable-endpoint', (req, res) => {
+    const userInput = req.query.command;
+  
+    // Vulnerable code - DO NOT use this in a production environment
+    try {
+      const result = execSync(userInput, { encoding: 'utf-8' });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(`Error: ${error.message}`);
+    }
+  });
 
 app.listen(PORT, () => {
   console.log("Server running");
