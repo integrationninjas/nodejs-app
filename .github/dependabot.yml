@@ -9,7 +9,9 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
-      time: "08:49"
+      time: "08:56"
       timezone: "Asia/Kolkata"
+    # Raise pull requests for version updates against the `dependabot-alerts` branch
+    target-branch: "dependabot-alerts"  
     # Allow up to 10 open pull requests for pip dependencies
     open-pull-requests-limit: 2
