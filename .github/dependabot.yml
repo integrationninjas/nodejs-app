@@ -9,7 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
-      time: "08:56"
+      time: "09:00"
       timezone: "Asia/Kolkata"
     # Raise pull requests for version updates against the `dependabot-alerts` branch
     target-branch: "dependabot-alerts"  
