@@ -9,7 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
-      time: "08:46"
+      time: "08:49"
       timezone: "Asia/Kolkata"
     # Allow up to 10 open pull requests for pip dependencies
     open-pull-requests-limit: 2
