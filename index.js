@@ -32,7 +32,7 @@ app.post('/addUser',async (req, res) => {
     res.send(result).status(204);
 });
 
-app.get('/addUser', async(req, res) => {
+app.get('/getUsers', async(req, res) => {
     let collection = await db.collection("users");
     let results = await collection.find({})
       
