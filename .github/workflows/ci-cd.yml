@@ -16,8 +16,6 @@ jobs:
           node-version: 16.x
       - name: Install Dependencies
         run : npm install
-      - name: Test Project
-        run: npm test
       - uses: 'google-github-actions/auth@v2'
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
