@@ -2,14 +2,14 @@ name: CICD
 
 on:
   push:
-    branches: [main,master]
+    branches: [gcp-app-engine]
     
 jobs:
   build:
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set Node.js 16.x
         uses: actions/setup-node@v3
         with:
@@ -18,3 +18,8 @@ jobs:
         run : npm install
       - name: Test Project
         run: npm test
+      - uses: 'google-github-actions/auth@v2'
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+  
