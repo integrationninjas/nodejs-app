@@ -26,5 +26,5 @@ jobs:
           token_format: 'access_token'
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-          audience: '//iam.googleapis.com/projects/296259488719/locations/global/workloadIdentityPools/test/providers/github'
+          audience: 'projects/296259488719/locations/global/workloadIdentityPools/test/providers/github'
   
