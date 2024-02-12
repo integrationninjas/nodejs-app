@@ -13,17 +13,22 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-      # - name: Set Node.js 16.x
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 16.x
-      # - name: Install Dependencies
-      #   run : npm install
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - name: Install Dependencies
+        run : npm install
       - id: 'auth'
         name: 'Authenticate to Google Cloud' 
         uses: google-github-actions/auth@v2
         with:
-          # token_format: access_token
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
-          # audience: '//iam.googleapis.com/projects/296259488719/locations/global/workloadIdentityPools/test/providers/github'
+      - id: 'deploy'
+        name: Deploy to Google App Engine
+        uses: 'google-github-actions/deploy-appengine@v2'
+  
+      - id: 'test'
+        name: AppEngine Service URL
+        run: 'curl "${{ steps.deploy.outputs.version_url }}"'    
