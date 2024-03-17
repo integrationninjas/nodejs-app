@@ -2,19 +2,30 @@ name: CICD
 
 on:
   push:
-    branches: [main,master]
+    branches: 
+      - elastic-beanstalk-ec2
     
 jobs:
   build:
     runs-on: [ubuntu-latest]
     steps:
-      - name: Checkout Source
-        uses: actions/checkout@v3
-      - name: Set Node.js 16.x
-        uses: actions/setup-node@v3
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 16.x
+          node-version: 20
       - name: Install Dependencies
         run : npm install
-      - name: Test Project
-        run: npm test
+      - name: Generate deployment package
+        run: zip -r nodejs-app-build.zip .
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: 'nodejs-app'
+          environment_name: 'nodejs-app-env'
+          region: us-east-1
+          version_label: ${{ github.sha }}
+          deployment_package: nodejs-app-build.zip
