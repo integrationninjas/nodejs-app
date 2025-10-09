@@ -11,20 +11,26 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-      - name: Login to docker hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}     
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build Docker Image
-        run: docker build -t integrationninjas/nodejs-app  .
-      - name: Publish Image to docker hub
-        run: docker push integrationninjas/nodejs-app:latest 
+        run: docker build -t kunal1522/nodejs-app .
+
+      - name: Publish Image to Docker Hub
+        run: docker push kunal1522/nodejs-app:latest
  
   deploy:
     needs: build
-    runs-on: self-hosted 
+    runs-on: self-hosted
     steps:
-      - name: Pull image from docker hub
-        run: docker pull integrationninjas/nodejs-app:latest 
+      - name: Pull Image from Docker Hub
+        run: docker pull kunal1522/nodejs-app:latest 
+
       - name: Delete old container
-        run: docker rm -f nodejs-app-container  
+        run: docker rm -f nodejs-app-container || true
+
       - name: Run Docker Container
-        run: docker run -d -p 4000:4000 --name nodejs-app-container -e MONGO_PASSWORD='${{ secrets.MONGO_PASSWORD }}' integrationninjas/nodejs-app
+        run: docker run -d -p 4000:4000 --name nodejs-app-container -e MONGO_PASSWORD='${{ secrets.MONGO_PASSWORD }}' kunal1522/nodejs-app
+
