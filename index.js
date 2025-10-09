@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-    res.send('Hello World, from Kunal');
+    res.send('Hello World, from Kunal i am testing ');
 })
 
 app.post('/addUser',async (req, res) => {
