@@ -9,12 +9,33 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v3
-      - name: Set Node.js 16.x
-        uses: actions/setup-node@v3
+        uses: actions/checkout@v4
+    
+
+  attest:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write        # mints the OIDC token for keyless Sigstore signing
+      attestations: write    # publishes the attestation to the repo's store
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { name: app-artifact, path: . }
+ 
+      - name: Generate SBOM (SPDX, via Syft)
+        uses: anchore/sbom-action@v0
         with:
-          node-version: 16.x
-      - name: Install Dependencies
-        run : npm install
-      - name: Test Project
-        run: npm test
+          path: .
+          format: spdx-json
+          output-file: sbom.spdx.json
+ 
+      - name: Attest build provenance (SLSA)
+        uses: actions/attest@v4
+        with: { subject-path: app.tar.gz }
+ 
+      - name: Attest SBOM
+        uses: actions/attest@v4
+        with:
+          subject-path: app.tar.gz
+          sbom-path: sbom.spdx.json

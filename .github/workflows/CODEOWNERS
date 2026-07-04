@@ -1,0 +1,6 @@
+# Segregation of duties: the person who merges pipeline changes
+# should not also be the sole approver.
+
+/.github/workflows/ @ototech16
+/server.js          @ototech16
+/package.json       @ototech16
