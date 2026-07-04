@@ -73,6 +73,13 @@ app.get("/rest/getAllUsers", (req, res) => {
     res.send(userData)
    });
 
-app.listen(PORT, () => {
-  console.log("Server running");
-});
+// Only start a real listening server when run directly (node server.js),
+// not when required by the test suite -- this is what lets supertest
+// exercise the app in-memory without a real network port.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log("Server running");
+  });
+}
+
+module.exports = app;

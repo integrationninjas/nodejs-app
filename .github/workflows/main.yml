@@ -2,38 +2,82 @@ name: CICD
 
 on:
   push:
-    branches: [main,master]
-    
+    branches: [main, master]
+  pull_request:
+    branches: [aws-oidc-test, master]
+
+permissions:
+  contents: read
+
 jobs:
   build:
-    runs-on: [ubuntu-latest]
-    steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-    
-
-  attest:
-    needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write        # mints the OIDC token for keyless Sigstore signing
-      attestations: write    # publishes the attestation to the repo's store
     steps:
-      - uses: actions/download-artifact@v4
-        with: { name: app-artifact, path: . }
- 
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Set Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Test Project
+        run: npm test
+
+      - name: Package app
+        run: tar --exclude='node_modules' --exclude='.git' --exclude='app.tar.gz' -czf app.tar.gz .
+
+      - name: Upload app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-artifact
+          path: app.tar.gz
+          retention-days: 7
+
       - name: Generate SBOM (SPDX, via Syft)
         uses: anchore/sbom-action@v0
         with:
           path: .
           format: spdx-json
           output-file: sbom.spdx.json
- 
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.spdx.json
+          retention-days: 7
+
+  attest:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Download app artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-artifact
+          path: .
+
+      - name: Download SBOM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom
+          path: .
+
       - name: Attest build provenance (SLSA)
         uses: actions/attest@v4
-        with: { subject-path: app.tar.gz }
- 
+        with:
+          subject-path: app.tar.gz
+
       - name: Attest SBOM
         uses: actions/attest@v4
         with:
